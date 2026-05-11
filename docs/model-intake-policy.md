@@ -80,3 +80,28 @@ Use `ALLOW_PATTERNS` and `IGNORE_PATTERNS` only for explicit review cases:
 ```sh
 make hf-download REPO=org/model REVISION=<commit> ALLOW_PATTERNS='*.safetensors,*.json,*.txt'
 ```
+
+## Pinned Qwen3 Retrieval Set
+
+The convenience target downloads the official Qwen3 embedding and reranker
+models requested for this sandbox:
+
+```sh
+make qwen3-retrieval-download
+```
+
+Pinned inputs:
+
+| Purpose | Size | Repo | Revision |
+| --- | --- | --- | --- |
+| Embedding | 0.6B | `Qwen/Qwen3-Embedding-0.6B` | `97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3` |
+| Embedding | 8B | `Qwen/Qwen3-Embedding-8B` | `1d8ad4ca9b3dd8059ad90a75d4983776a23d44af` |
+| Reranker | 0.6B | `Qwen/Qwen3-Reranker-0.6B` | `e61197ed45024b0ed8a2d74b80b4d909f1255473` |
+| Reranker | 8B | `Qwen/Qwen3-Reranker-8B` | `77d193c791ed757ca307ee72715aa132723da912` |
+
+Use `SIZES=0.6B` to test the smaller embedding/reranker pair before pulling
+the 8B weights:
+
+```sh
+make qwen3-retrieval-download SIZES=0.6B
+```

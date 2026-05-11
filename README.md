@@ -92,3 +92,22 @@ make run
 The downloader resolves `REVISION` to an immutable Hugging Face commit SHA,
 saves that source metadata in quarantine, scans the files, and only promotes
 approved artifacts into the runtime-visible model directory.
+
+For the pinned Qwen3 embedding/reranker set:
+
+```sh
+make qwen3-retrieval-download
+```
+
+That downloads these exact pinned revisions into quarantine:
+
+- `Qwen/Qwen3-Embedding-0.6B`
+- `Qwen/Qwen3-Embedding-8B`
+- `Qwen/Qwen3-Reranker-0.6B`
+- `Qwen/Qwen3-Reranker-8B`
+
+Start with the smaller pair when testing the flow:
+
+```sh
+make qwen3-retrieval-download SIZES=0.6B
+```

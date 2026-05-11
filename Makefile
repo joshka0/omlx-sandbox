@@ -2,7 +2,7 @@ SHELL := /bin/bash
 
 .EXPORT_ALL_VARIABLES:
 
-.PHONY: help check setup setup-dmg install-dmg install-service install-service-dmg uninstall-service verify verify-dmg run run-dmg run-foreground run-dmg-foreground start status gui copy-api-key hf-download promote-model smoke audit-root test-server stop teardown teardown-plan clean-local validate
+.PHONY: help check setup setup-dmg install-dmg install-service install-service-dmg uninstall-service verify verify-dmg run run-dmg run-foreground run-dmg-foreground start status gui copy-api-key hf-download qwen3-retrieval-download promote-model smoke audit-root test-server stop teardown teardown-plan clean-local validate
 
 help:
 	@printf '%s\n' \
@@ -16,6 +16,7 @@ help:
 		'  make gui          Open the sandboxed oMLX web admin UI' \
 		'  make copy-api-key Copy the sandbox API key to the console user clipboard' \
 		'  make hf-download REPO=org/model [REVISION=main] Download to quarantine and scan' \
+		'  make qwen3-retrieval-download [SIZES="0.6B 8B"] [KINDS="embedding reranker"]' \
 		'  make promote-model CANDIDATE=/Users/Shared/... Promote a scanned quarantine model' \
 		'  make run-foreground      Debug: run source oMLX in foreground with sudo wrapper' \
 		'  make run-dmg-foreground  Debug: run DMG oMLX in foreground with sudo wrapper' \
@@ -112,6 +113,9 @@ copy-api-key:
 hf-download:
 	@test -n "$(REPO)" || { echo 'usage: make hf-download REPO=org/model [REVISION=main] [NAME=local-name]' >&2; exit 2; }
 	@sudo env REPO="$(REPO)" REVISION="$(REVISION)" NAME="$(NAME)" HF_TOKEN_FILE="$(HF_TOKEN_FILE)" scripts/64-hf-download-to-quarantine.sh
+
+qwen3-retrieval-download:
+	@sudo env SIZES="$(SIZES)" KINDS="$(KINDS)" HF_TOKEN_FILE="$(HF_TOKEN_FILE)" scripts/65-download-qwen3-retrieval.sh
 
 promote-model:
 	@test -n "$(CANDIDATE)" || { echo 'usage: make promote-model CANDIDATE=/Users/Shared/omlx-sandbox/models-quarantine/name' >&2; exit 2; }

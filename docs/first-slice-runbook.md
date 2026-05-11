@@ -126,6 +126,27 @@ make promote-model CANDIDATE=/Users/Shared/omlx-sandbox/models-quarantine/<candi
 make run
 ```
 
+For the pinned Qwen3 embedding/reranker set:
+
+```sh
+make qwen3-retrieval-download
+```
+
+Start with the smaller pair if you want to verify oMLX detection and endpoints
+before downloading the 8B weights:
+
+```sh
+make qwen3-retrieval-download SIZES=0.6B
+```
+
+After each candidate is approved, promote it using the command printed by the
+downloader, then restart the service:
+
+```sh
+make run
+make test-server
+```
+
 ## Running From The DMG
 
 The DMG path does not launch the GUI app with Finder or `open`. That would run
