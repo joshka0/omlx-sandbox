@@ -1,0 +1,68 @@
+(version 1)
+(deny default)
+(debug deny)
+
+; Standard macOS allowances for logging, preferences, and common system agents.
+; This is still much tighter than the normal user context because file and
+; network access below remain explicit.
+(import "system.sb")
+
+; Runtime can inspect metadata broadly enough for dynamic loader and Python
+; import behavior, but data reads/writes stay allowlisted.
+(allow file-read-metadata)
+(allow file-test-existence)
+
+; System/runtime read paths.
+(allow file-read* file-map-executable
+  (subpath "/System")
+  (subpath "/Library/Apple")
+  (subpath "/usr/lib")
+  (subpath "/usr/share")
+  (subpath "/usr/bin")
+  (subpath "/bin")
+  (subpath "/sbin")
+  (subpath "/private/etc"))
+
+; oMLX runtime paths.
+(allow file-read* file-map-executable
+  (subpath "__OMLX_BASE__/src")
+  (subpath "__OMLX_BASE__/venv")
+  (subpath "__OMLX_BASE__/pythons")
+  (subpath "__OMLX_BASE__/app")
+  (subpath "__OMLX_BASE__/models-approved")
+  (subpath "__OMLX_BASE__/home")
+  (subpath "__OMLX_BASE__/state"))
+
+; Runtime write paths.
+(allow file-read* file-write*
+  (subpath "__OMLX_BASE__/cache")
+  (subpath "__OMLX_BASE__/logs")
+  (subpath "__OMLX_BASE__/tmp")
+  (subpath "__OMLX_BASE__/run")
+  (subpath "__OMLX_BASE__/home")
+  (subpath "__OMLX_BASE__/state"))
+
+; Python and native ML stacks may need shared memory and sysctl reads.
+(allow ipc-posix-shm)
+(allow sysctl-read)
+
+; MLX/Metal may require IOKit and Mach service access. Keep this broad for the
+; first working slice, then narrow from denial logs if practical.
+(allow iokit-open*)
+(allow mach-lookup)
+
+; Permit executing only the local runtime tree. The serving command itself is
+; launched by sandbox-exec, but child helpers should not come from user homes.
+(allow process-fork)
+(allow process-exec*
+  (subpath "__OMLX_BASE__/venv")
+  (subpath "__OMLX_BASE__/pythons")
+  (subpath "__OMLX_BASE__/app")
+  (subpath "/usr/bin")
+  (subpath "/bin"))
+
+; Local API surface only.
+(allow network-bind
+  (local tcp "localhost:*"))
+(allow network-inbound
+  (local tcp "localhost:*"))
