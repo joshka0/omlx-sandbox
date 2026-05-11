@@ -40,6 +40,12 @@ for debugging:
 make run-foreground
 ```
 
+Privileged make targets print why they need `sudo` before macOS asks for a
+password. Typical reasons are creating/hardening the `omlxsvc` user, writing
+root-owned files under `/Users/Shared/omlx-sandbox`, installing the
+LaunchDaemon in `/Library/LaunchDaemons`, reading the protected API key, or
+moving models between quarantine and approved storage.
+
 To use the signed DMG instead of the source checkout, install the app bundle
 into the sandbox and run only its CLI entrypoint:
 

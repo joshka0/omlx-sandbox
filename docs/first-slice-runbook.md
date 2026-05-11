@@ -67,6 +67,11 @@ debugging:
 make run-foreground
 ```
 
+Make targets use `scripts/sudo-with-reason.sh`, so an expired sudo timestamp
+prints a short reason before the password prompt. This keeps root use explicit:
+service-user changes, root-owned sandbox files, LaunchDaemon installation,
+protected API-key reads, and model promotion each have separate prompt text.
+
 Audit the root-escalation controls after setup and after any runtime change:
 
 ```sh
